@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Fragment, useEffect, useState } from "react";
+import "./App.css";
+import MainHeader from "./Components/MainHeader/MainHeader";
+import Login from "./Components/Login/Login";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [loggedIn, setLoggedIn] = useState(() => {
+    if (JSON.parse(localStorage.getItem("isLoggedUser")) !== null) {
+      return JSON.parse(localStorage.getItem("isLoggedUser")).isLogged;
+    } else {
+      return false;
+    }
+  });
+
+  console.log(loggedIn);
+
+  useEffect(() => {
+    const storedLoggedUSerData = JSON.parse(localStorage.getItem("isLoggedUser"));
+    if (storedLoggedUSerData !== null) {
+      if (storedLoggedUSerData === true) {
+        setLoggedIn(true);
+      }
+    }
+  }, []);
+
+  const loginHandler = (user, password) => {
+    const loggedUser = localStorage.setItem(
+      "isLoggedUser",
+      JSON.stringify({ username: user, isLogged: true })
+    );
+    setLoggedIn(true);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Fragment>
+      <MainHeader />
+      <main>
+        <Login onLogin={loginHandler} />
+      </main>
+    </Fragment>
+  );
 }
 
-export default App
+export default App;
