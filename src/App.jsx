@@ -3,6 +3,7 @@ import "./App.css";
 import MainHeader from "./Components/MainHeader/MainHeader";
 import Login from "./Components/Login/Login";
 import Home from "./Components/Home/Home";
+import AuthContext from "./store/auth-context";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
@@ -38,13 +39,18 @@ function App() {
   }
 
   return (
-    <Fragment>
-      <MainHeader isAuthenticated={loggedIn} onLogout={logoutHandler}/>
+    <AuthContext.Provider value={
+      {
+        loggedIn: loggedIn,
+        onLogout: logoutHandler
+      }
+    }>
+      <MainHeader onLogout={logoutHandler}/>
       <main>
         {!loggedIn && <Login onLogin={loginHandler} />}
         {loggedIn && <Home/>}
       </main>
-    </Fragment>
+    </AuthContext.Provider>
   );
 }
 
